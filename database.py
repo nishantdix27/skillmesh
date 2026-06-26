@@ -88,6 +88,12 @@ def init_db():
         );
     """)
     conn.commit()
+    # Migration: add image_data column if not exists
+    try:
+        conn.execute("ALTER TABLE posts ADD COLUMN image_data TEXT")
+        conn.commit()
+    except:
+        pass  # Column already exists
     conn.close()
 
 def hash_password(password):
@@ -192,11 +198,11 @@ def search_users(query):
     return [dict(r) for r in results]
 
 # ── POSTS ─────────────────────────────────────────────
-def create_post(user_id, content, skill_tag, post_type, is_public):
+def create_post(user_id, content, skill_tag, post_type, is_public, image_data=None):
     conn = get_conn()
     conn.execute(
-        "INSERT INTO posts (user_id, content, skill_tag, post_type, is_public) VALUES (?,?,?,?,?)",
-        (user_id, content, skill_tag, post_type, int(is_public))
+        "INSERT INTO posts (user_id, content, skill_tag, post_type, is_public, image_data) VALUES (?,?,?,?,?,?)",
+        (user_id, content, skill_tag, post_type, int(is_public), image_data)
     )
     conn.commit()
     conn.close()

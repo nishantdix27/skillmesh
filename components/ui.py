@@ -268,6 +268,10 @@ def render_post_card(post, current_user_id, db):
     </div>
     """, unsafe_allow_html=True)
 
+    # Show image if post has one
+    if post.get("image_data"):
+        st.image(post["image_data"], use_column_width=True)
+
     col1, col2 = st.columns([1, 6])
     with col1:
         if st.button(heart, key=f"like_{post['id']}"):
